@@ -6,6 +6,7 @@ let fichas = ["O", "X"];
 let puestas = 0;
 //Indica si la partida ha terminado
 let partidaAcabada = false;
+let empate = false;
 let textoVictoria = document.getElementById("textoVictoria");
 
 let botones = Array.from(document.getElementsByTagName("button"));
@@ -24,6 +25,9 @@ function ponerFicha(event) {
 
     //Comprobación estado de la partida
     let estadoPartida = estado();
+    if(estadoPartida == 0 && puestas == 9){
+      empate = true;
+    }
     if (estadoPartida == 0) {
       cambiarTurno();
       if (puestas < 9) {
@@ -32,6 +36,12 @@ function ponerFicha(event) {
         puestas += 1;
         cambiarTurno();
       }
+    }
+
+    if (empate){
+      textoVictoria.innerHTML = "Empate!";
+      partidaAcabada = true;
+      textoVictoria.style.visibility = "visible";
     }
 
     if (estadoPartida == 1) {
@@ -44,6 +54,8 @@ function ponerFicha(event) {
     }
   }
 }
+
+
 
 //Si el turno es x se lo pasa a o
 function cambiarTurno() {
@@ -70,6 +82,7 @@ function estado() {
     } else {
       return false;
     }
+    
   }
 
   //Comprobamos si hay alguna linea
@@ -97,7 +110,7 @@ function estado() {
       nEstado = 1;
     } else {
       nEstado = -1;
-    }
+    } 
   }
 
   return nEstado;
@@ -112,16 +125,13 @@ function ia() {
   
   let valores = botones.map((x) => x.innerHTML);
   let pos = -1;
-
-  if (valores[4] == "") {
-    pos = 4;
-  } else {
+  
     let n = aleatorio(0, botones.length - 1);
     while (valores[n] != "") {
       n = aleatorio(0, botones.length - 1);
     }
     pos = n;
-  }
+  
 
   botones[pos].innerHTML = "O";
   return pos;
